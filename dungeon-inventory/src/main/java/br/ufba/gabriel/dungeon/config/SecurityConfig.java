@@ -19,7 +19,7 @@ public class SecurityConfig {
                     var config = new CorsConfiguration();
                     // Aqui mantemos o localhost para você testar no VS Code.
                     // No futuro, adicionaremos a URL do seu Front-end hospedado aqui!
-                    config.setAllowedOrigins(List.of("http://127.0.0.1:5500", "http://localhost:5500"));
+                    config.setAllowedOrigins(List.of("http://127.0.0.1:5500", "http://localhost:5500", "https://gabrielcscs.github.io"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
                     return config;
