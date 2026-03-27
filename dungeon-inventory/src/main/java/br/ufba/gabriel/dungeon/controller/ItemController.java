@@ -1,8 +1,12 @@
 package br.ufba.gabriel.dungeon.controller;
 
 import br.ufba.gabriel.dungeon.model.Item;
+import br.ufba.gabriel.dungeon.model.Usuario;
 import br.ufba.gabriel.dungeon.repository.ItemRepository;
+import br.ufba.gabriel.dungeon.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,21 +16,43 @@ import java.util.List;
 @CrossOrigin(origins= "*")
 public class ItemController {
     @Autowired
-    private ItemRepository repository;
+    private ItemRepository itemRepository;
 
-    @DeleteMapping("/{idItem}")
-    public  void removerItem(@PathVariable Long idItem){
-        repository.deleteById(idItem);
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @DeleteMapping("/{usuarioId}/{idItem}")
+    public ResponseEntity<String> removerItem(@PathVariable Long usuarioId, @PathVariable Long idItem){
+        Item   itemDoBanco = itemRepository.findById(idItem).orElse(null);
+        if(itemDoBanco != null && itemDoBanco.getUsuario().getId().equals(usuarioId)){
+            itemRepository.deleteById(idItem);
+            return ResponseEntity.ok("Item Removido com sucesso");
+        }else{
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("Item não existe");
+        }
     }
 
-    @GetMapping
-    public List<Item> lista(){
-        return repository.findAll();
+    @GetMapping("usuario/{usuarioId}")
+    public List<Item> lista(@PathVariable Long usuarioId){
+        Usuario donoDoItem = usuarioRepository.findById(usuarioId).orElse(null);
+        if (donoDoItem != null){
+            return itemRepository.findByUsuarioId(usuarioId);
+        }else{return null;}
+
     }
 
-    @PostMapping
-    public Item adicionar(@RequestBody Item novoItem){
-        return repository.save(novoItem);
+    @PostMapping("/usuario/{usuarioId}")
+    public Item adicionarItem(@PathVariable Long usuarioId, @RequestBody Item novoItem) {
+        Usuario donoDoItem = usuarioRepository.findById(usuarioId).orElse(null);
+
+        if (donoDoItem != null) {
+            novoItem.setUsuario(donoDoItem);
+            return itemRepository.save(novoItem);
+        } else {
+            return null;
+        }
     }
 
 }
