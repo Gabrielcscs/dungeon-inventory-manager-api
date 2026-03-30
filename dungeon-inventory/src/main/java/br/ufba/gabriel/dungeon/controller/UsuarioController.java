@@ -31,7 +31,7 @@ public class UsuarioController {
     @PostMapping("/login")
     public Usuario logar(@RequestBody Usuario loginUsuario){
         Usuario usuarioDoBanco = usuarioRepository.findByUsername(loginUsuario.getUsername());
-        if(usuarioDoBanco != null && passwordEncoder.matches(usuarioDoBanco.getSenha(), loginUsuario.getSenha())){
+        if(usuarioDoBanco != null && passwordEncoder.matches(loginUsuario.getSenha(), usuarioDoBanco.getSenha())){
             return usuarioDoBanco;
         }else {return null;}
     }

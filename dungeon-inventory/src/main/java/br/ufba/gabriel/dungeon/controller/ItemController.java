@@ -34,7 +34,7 @@ public class ItemController {
         }
     }
 
-    @GetMapping("usuario/{usuarioId}")
+    @GetMapping("/usuario/{usuarioId}")
     public List<Item> lista(@PathVariable Long usuarioId){
         Usuario donoDoItem = usuarioRepository.findById(usuarioId).orElse(null);
         if (donoDoItem != null){
